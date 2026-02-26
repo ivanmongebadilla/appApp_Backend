@@ -3,6 +3,8 @@ import express, {json} from 'express';
 import { userRouter } from './routes/user.js';
 import { applicationRouter } from './routes/applications.js';
 import morgan from 'morgan';
+import { AppError } from './utils/apperror.js';
+import { errorHandler } from './controllers/errorcontrollers.js';
 
 const hostname = 'localhost';
 const port = 3000;
@@ -19,26 +21,12 @@ app.use(express.urlencoded({extended: true})); //Middleware to parse URL encoded
 app.use('/api/v1/user', userRouter);
 app.use('/api/v1/application', applicationRouter);
 
-app.use((req, res, next) => { //This run for all the methods
-  // res.status(404).json({
-  //   status: 'failed',
-  //   message: `Can't find ${req.originalUrl}`
-  // })
-  const err = new Error(`Can't find ${req.originalUrl}`) // Built-in Error constructor
-  err.status = 'fail'
-  err.statusCode = 404
-  next(err); //When sending props into next function Express know it's an error so it will call the Express Error Handeling middleware
+app.use((req, res, next) => { //This run for all the methods will get there if does not reach any of the other endpoints
+  next(new AppError(`Can't find ${req.originalUrl}`, 404)); //When sending props into next function Express know it's an error so it will call the Express Error Handeling middleware
 })
 
 //Express Error Handeling middleware
-app.use((err, req, res, next) =>{
-  err.statusCode = err.statusCode || 500; // If there is no statusCode then default will be 500
-  err.status = err.status || 'error' // If there is no status then default will be error
-  res.status(err.statusCode).json({
-    status: err.status,
-    message: err.message
-  })
-})
+app.use(errorHandler)
 
 // ***** LISTEN ***** /
 app.listen(port, () => {
