@@ -1,6 +1,7 @@
 import { Router, json } from "express";
 import { userValidation } from "../middlewares/schemavalidations.js";
 import { supabase } from "../supabase/supabase.js";
+import { hashPassword } from "../utils/utils.js";
 
 export const userRouter = Router();
 
@@ -9,12 +10,13 @@ userRouter.get('/', (req, res) => {
     res.json({message: 'Hello World'});
 });
 
-userRouter.post('/', userValidation, async (req, res) => {
+userRouter.post('/signup', userValidation, async (req, res) => {
+    const hashedPassword = await hashPassword(req.body.password);
     const { data, error } = await supabase
         .from('Users')
         .insert({
             email: req.body.email,
-            password: req.body.password,
+            password: hashedPassword,
             firstname: req.body.firstName,
             lastname: req.body.lastName,
             role: req.body.role,

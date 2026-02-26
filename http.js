@@ -8,6 +8,7 @@ const hostname = 'localhost';
 const port = 3000;
 
 app.use(express.json()); //Middleware to parse JSON bodies comming from request
+app.use(express.urlencoded({extended: true})); //Middleware to parse URL encoded bodies coming from request
 
 app.use('/user', userRouter);
 app.use('/application', applicationRouter);

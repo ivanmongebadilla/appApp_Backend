@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 export const positionSchema = z.object({
+    userid: z.number(),
     companyName: z.string(),
     positionTitle: z.string(),
     employmentType: z.enum(["FULL_TIME", "PART_TIME", "CONTRACT", "TEMPORARY", "INTERN"]),
