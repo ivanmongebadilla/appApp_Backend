@@ -1,7 +1,9 @@
 import { supabase } from "../supabase/supabase.js";
 import { hashPassword } from "../utils/utils.js";
+import { AppError } from "../utils/apperror.js";
+import { catchAsync } from "../utils/catchasync.js";
 
-export const signUpFunction = async (req, res) =>{
+export const signUpFunction = catchAsync(async (req, res) =>{
     const hashedPassword = await hashPassword(req.body.password);
     const { data, error } = await supabase
         .from('Users')
@@ -18,7 +20,7 @@ export const signUpFunction = async (req, res) =>{
 
     console.log(data, error);
     if(error) {
-        return res.status(409).json({status: "failed", error: error.message});
+        throw new AppError(error.message, 409)
     }
     return res.status(201).json({status: "success", message: "User created successfully"});
-} 
+}); 

@@ -12,7 +12,7 @@ const port = 3000;
 const app = express();
 
 // ***** MIDDLEWARES ***** /
-app.use(morgan('dev')); //To see information about the requests
+app.use(morgan('dev')); //To see information about the requests.
 app.use(express.json()); //Middleware to parse JSON bodies comming from request
 app.use(express.urlencoded({extended: true})); //Middleware to parse URL encoded bodies coming from request
 
