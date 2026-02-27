@@ -3,7 +3,7 @@ import { hashPassword } from "../utils/utils.js";
 import { AppError } from "../utils/apperror.js";
 import { catchAsync } from "../utils/catchasync.js";
 
-export const signUpFunction = catchAsync(async (req, res) =>{
+export const signUpFunction = catchAsync(async (req, res, next) =>{
     const hashedPassword = await hashPassword(req.body.password);
     const { data, error } = await supabase
         .from('Users')
@@ -19,8 +19,10 @@ export const signUpFunction = catchAsync(async (req, res) =>{
     });
 
     console.log(data, error);
-    if(error) {
-        throw new AppError(error.message, 409)
+    if(error && error.code != "") {
+        return next(new AppError(error.message, 409))
+    } else if (error && !error.code) {
+        return next(new AppError(error.message, 500))
     }
     return res.status(201).json({status: "success", message: "User created successfully"});
 }); 

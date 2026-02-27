@@ -28,7 +28,23 @@ app.use((req, res, next) => { //This run for all the methods will get there if d
 //Express Error Handeling middleware
 app.use(errorHandler)
 
+// Uncaught Exceptions 
+process.on('uncaughtException', err => {
+    console.log('❌ UNCAUGHT EXCEPTION! Shutting down! ❌');
+    console.log(err.name, err.message);
+    process.exit(1);
+
+})
+
 // ***** LISTEN ***** /
 app.listen(port, () => {
   console.log(`Server listening at http://${hostname}:${port}/`)
 });
+
+// ERRORS OUTSIDE EXPRESS
+process.on('unhandledRejection', err => {
+    console.log(err.name, err.message);
+    server.close(() => {
+        process.exit(1);
+    })
+})

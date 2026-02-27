@@ -1,6 +1,6 @@
 const sendErrorDev = (err, res) => {
     if (err.isOperational) {
-        res.status(err.statusCode).json({
+        return res.status(err.statusCode).json({
             status: err.status,
             error: err,
             message: err.message,
@@ -8,7 +8,7 @@ const sendErrorDev = (err, res) => {
         })
     } else {
         console.error('❌❌ERROR❌❌', err)
-        res.status(500).json({
+        return res.status(500).json({
             status: 'error',
             message: 'Something went wrong!'
         })
@@ -18,12 +18,12 @@ const sendErrorDev = (err, res) => {
 
 const sendErrorProd = (err, res) => {
     if (err.isOperational){
-        res.status(err.statusCode).json({
+        return res.status(err.statusCode).json({
             status: err.status,
             message: err.message
         })
     } else {
-        res.status(500).json({
+        return res.status(500).json({
             status: 'error',
             message: 'Something went wrong'
         })
@@ -40,6 +40,5 @@ export const errorHandler = (err, req, res, next) =>{
   } else if (process.env.NODE_ENV === 'production'){
     sendErrorProd(err, res);
   }
-  
   
 }
