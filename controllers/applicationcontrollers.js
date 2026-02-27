@@ -78,6 +78,7 @@ export const getSingleApplication = catchAsync(async(req, res, next) => {
     console.log(data, error);
     if(error && error.code != "") {
         return next(new AppError(error.message, 404)) //TODO maybe change error.message to error.details
+        
     } else if (error && !error.code) {
         return next(new AppError(error.message, 500))
     }
