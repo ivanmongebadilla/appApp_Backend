@@ -1,18 +1,19 @@
 import { Router } from "express";
-import { positionValidation, editPositionValidation } from "../middlewares/schemavalidations.js";
+import { positionValidation, editPositionValidation, queryApplicationValidation } from "../middlewares/schemavalidations.js";
 import { supabase } from "../supabase/supabase.js";
-import { addApplication, editPosition, getSingleApplication } from "../controllers/applicationcontrollers.js";
+import { addApplication, editPosition, filterApplications, getSingleApplication } from "../controllers/applicationcontrollers.js";
 
 export const applicationRouter = Router();
 
 //TODO use route and chain actions .route('').get().post()... when possible
 
+//TODO should i use this to get all applications or only user_id applications
 applicationRouter.get('/', (req, res) => {
-    res.send("Hellow World from applications")
-})
+    return res.send("Successful")
+}).post('/', positionValidation, addApplication)
 
-applicationRouter.get('/:id', getSingleApplication);
+applicationRouter.get('/filter', queryApplicationValidation, filterApplications)
 
-applicationRouter.post('/', positionValidation, addApplication);
-
-applicationRouter.patch('/:id', editPositionValidation, editPosition);
+applicationRouter
+    .get('/:id', getSingleApplication)
+    .patch('/:id', editPositionValidation, editPosition);
