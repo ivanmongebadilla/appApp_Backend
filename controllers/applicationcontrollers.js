@@ -1,6 +1,7 @@
 import { catchAsync } from "../utils/catchasync.js"
 import { supabase } from "../supabase/supabase.js";
 import { AppError } from "../utils/apperror.js";
+import { endsWith } from "zod";
 
 
 export const addApplication = catchAsync(async (req, res, next) => {
@@ -85,17 +86,15 @@ export const getSingleApplication = catchAsync(async(req, res, next) => {
 })
 
 export const filterApplications = catchAsync(async(req, res, next) => {
-    console.log('Query: ', req.query)
 
     let query = supabase
     .from("Applications")
     .select()
 
     const filterConfig = {
-        //TODO add filer for date range
-        //TODO add filter for searching a position 
+        applied_date: (query, value) => query.eq('applied_date', req.query.applied_date),
         company: (query,value) => query.ilike('company', req.query.company),
-        // position: (query,value) => query.contains('position', req.query.position.toLocaleLowerCase()),
+        position: (query,value) => query.ilike('position', `%${req.query.position.toLocaleLowerCase()}%`),
         country: (query,value) => query.ilike('country', req.query.country.toLocaleLowerCase()),
         state: (query, value) => query.ilike('state',req.query.state.toLocaleLowerCase()),
         city: (query, value) => query.ilike('city', req.query.city.toLocaleLowerCase()),
