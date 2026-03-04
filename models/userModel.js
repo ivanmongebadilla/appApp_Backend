@@ -1,5 +1,5 @@
 import { z } from 'zod';
-const ROLES = ["ADMIN", "USER"]
+const ROLES = ["admin", "user"]
 
 export const userSchema = z.object({
     email: z.email(), // Add errors

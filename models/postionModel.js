@@ -4,16 +4,16 @@ export const positionSchema = z.object({
     userid: z.number(), //TODO need to remove this I think
     companyName: z.string(),
     positionTitle: z.string(),
-    employmentType: z.enum(["FULL_TIME", "PART_TIME", "CONTRACT", "TEMPORARY", "INTERN"]),
-    workMode: z.enum(["REMOTE", "ON_SITE", "HYBRID"]),
+    employmentType: z.enum(["full_time", "part_time", "contract", "temporary", "intern"]),
+    workMode: z.enum(["remote", "on_site", "hybrid"]),
     link: z.string().url(),
     salary: z.object({
         min: z.number().nonnegative().optional(),
         max: z.number().nonnegative().optional(),
         currency: z.string().optional()
     }).optional(),
-    status: z.enum(["APPLIED", "INTERVIEWING", "OFFERED", "REJECTED", "SAVED", "ARCHIVED", "WITHDRAWN"]),
-    priority: z.enum(["HIGH", "MEDIUM", "LOW"]),
+    status: z.enum(["applied", "interviewing", "offered", "rejected", "saved", "archvied", "withdrawn"]),
+    priority: z.enum(["high", "medium", "low"]),
     notes: z.string().optional(),
     appliedAt: z.string().date(),
     location: z.object({

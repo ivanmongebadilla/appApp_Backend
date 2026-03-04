@@ -1,6 +1,8 @@
 import { Router, json } from "express";
 import { editUserValidation, userValidation } from "../middlewares/schemavalidations.js";
-import {editUser, signUpFunction} from '../controllers/usercontrollers.js';
+import {editUser} from '../controllers/usercontrollers.js';
+import { logInFunction, signUpFunction } from "../controllers/authenticationcontrollers.js";
+
 
 export const userRouter = Router();
 
@@ -24,9 +26,12 @@ userRouter.get('/:id', (req, res) => {
     res.status(500).json({status: 'error', message: 'This route is not yet defined'});
 });
 
-userRouter.post('/', userValidation, signUpFunction);
+userRouter.post('/signup', userValidation, signUpFunction);
+
+//TODO add validation middleware
+userRouter.post('/login', logInFunction);
 
 // TODO should i use another validation?
 // TODO move function to controller
 //TODO change the id to use authenticated user id
-userRouter.patch('/:id', editUserValidation, editUser)
+userRouter.patch('/:id', editUserValidation, editUser);
