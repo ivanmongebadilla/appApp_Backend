@@ -16,6 +16,12 @@ app.use(morgan('dev')); //To see information about the requests.
 app.use(express.json()); //Middleware to parse JSON bodies comming from request
 app.use(express.urlencoded({extended: true})); //Middleware to parse URL encoded bodies coming from request
 
+//Just for testing
+// app.use((req,res,next) => {
+//   console.log("Headers: ", req.headers)
+//   next()
+// })
+
 
 // ***** ROUTES ***** /
 app.use('/api/v1/user', userRouter);

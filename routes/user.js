@@ -31,7 +31,15 @@ userRouter.post('/signup', userValidation, signUpFunction);
 //TODO add validation middleware
 userRouter.post('/login', logInFunction);
 
+userRouter.post('/forgotPassword', (req, res) => {
+    res.send("Success")
+})
+userRouter.post('/resetPassword', (req, res) => {
+    res.send("Success")
+})
+
 // TODO should i use another validation?
 // TODO move function to controller
 //TODO change the id to use authenticated user id
+//TODO Add Authentication and authorization
 userRouter.patch('/:id', editUserValidation, editUser);
