@@ -1,31 +1,48 @@
 import { Router, json } from "express";
-import { userValidation } from "../middlewares/schemavalidations.js";
-import { supabase } from "../supabase/supabase.js";
+import { editUserValidation, userValidation } from "../middlewares/schemavalidations.js";
+import {editUser} from '../controllers/usercontrollers.js';
+import { forgotPassword, logInFunction, signUpFunction } from "../controllers/authenticationcontrollers.js";
+
 
 export const userRouter = Router();
 
+// TODO we can validate the ID here so we dont have to repeat code in the controller
+// TODO can even move the function to the controller file 
+// userRouter.param('id', (req, res, next, val) => {
+//     console.log(`User id is: ${val}`)
+// })
+
+//TODO use route and chain actions .route('').get().post()...
+
+//TODO add validation middleware
+// TODO update this endpoint with real function
 userRouter.get('/', (req, res) => {
     // return res.json("Hello world");
-    res.json({message: 'Hello World'});
+    res.status(500).json({status: 'error', message: 'This route is not yet defined'});
 });
 
-userRouter.post('/', userValidation, async (req, res) => {
-    const { data, error } = await supabase
-        .from('Users')
-        .insert({
-            email: req.body.email,
-            password: req.body.password,
-            firstname: req.body.firstName,
-            lastname: req.body.lastName,
-            role: req.body.role,
-            country: req.body.location.country,
-            state: req.body.location.state,
-            city: req.body.location.city
-    });
-
-    console.log(data, error);
-    if(error) {
-        return res.status(409).json({error: error.message});
-    }
-    return res.status(201).json({message: "User created successfully"});
+//TODO add validation middleware
+// TODO update get function for user id
+userRouter.get('/:id', (req, res) => {
+    // return res.json("Hello world");
+    res.status(500).json({status: 'error', message: 'This route is not yet defined'});
 });
+
+userRouter.post('/signup', userValidation, signUpFunction);
+
+//TODO add validation middleware
+userRouter.post('/login', logInFunction);
+
+//TODO add validation middleware
+userRouter.post('/forgotPassword', forgotPassword)
+
+//TODO add validation middleware
+userRouter.post('/resetPassword', (req, res) => {
+    res.send("Success")
+})
+
+// TODO should i use another validation?
+// TODO move function to controller
+//TODO change the id to use authenticated user id
+//TODO Add Authentication and authorization
+userRouter.patch('/:id', editUserValidation, editUser);
