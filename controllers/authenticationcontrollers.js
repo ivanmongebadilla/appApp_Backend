@@ -1,16 +1,16 @@
 import { supabase } from "../supabase/supabase.js";
 import { hashPassword, correctPassword } from "../utils/utils.js";
 import { AppError } from "../utils/apperror.js";
+import { createPasswordResetToken } from "../utils/utils.js"
 import { catchAsync } from "../utils/catchasync.js";
-import { getUserByEmail, createUser } from "../repositories/userrepositories.js";
+import { getUserByEmail, createUser, passwordResetByEmail } from "../repositories/userrepositories.js";
 import jwt from 'jsonwebtoken';
 
 const signToken = (id) => {
     const JWT_SECRET = process.env.JWT_SECRET;
     const JWT_EXPIRES = process.env.JWT_EXPIRES_IN
-    console.log('ID: ', id)
+    
     return jwt.sign({id}, JWT_SECRET, { expiresIn: JWT_EXPIRES});
-
 }
 
 export const signUpFunction = catchAsync(async (req, res, next) =>{
@@ -43,10 +43,16 @@ export const logInFunction = catchAsync(async (req, res, next) => {
     res.status(200).json({status: "success", token})
 })
 
-export const forgotPassword = (req, res, next) => {
+export const forgotPassword = catchAsync(async (req, res, next) => {
     // 1) Gate user based on posted email
+    if (!req.body || !req.body.email){
+        return next(new AppError('Please provide email', 404))
+    }
 
     // 2) Generate the random reset token
+    const resetPasswordData = createPasswordResetToken()
+    const data = await passwordResetByEmail(resetPasswordData, req.body.email)
+    res.send("Success")
 
     // 3)
-}
+})

@@ -1,9 +1,23 @@
 import { catchAsync } from "../utils/catchasync.js"
-import { createApplication, getApplicationById, editPositionById, queryApplications } from "../repositories/applicationrepositories.js";
+import { createApplication, getApplicationById, 
+    editPositionById, queryApplications, findAllApplications,
+    getAllApplicationsByUserId } from "../repositories/applicationrepositories.js";
 
+
+export const getAllApplications = catchAsync(async (req,res,next) => {
+    const data = await findAllApplications()
+
+    return res.status(201).json({status: "success",  data});
+})
+
+export const getAllUserApplications = catchAsync(async (req, res, next) => {
+    const data = await getAllApplicationsByUserId(req.user.id)
+
+    return res.status(201).json({status: "success", data});
+})
 
 export const addApplication = catchAsync(async (req, res, next) => {
-    const data = await createApplication(req.body)
+    const data = await createApplication(req.body, req.user)
     
     return res.status(201).json({status: "success", message: "Application added successfully", data});
 })
@@ -17,7 +31,7 @@ export const editPosition = catchAsync(async (req, res, next) => {
 export const getSingleApplication = catchAsync(async(req, res, next) => {
     const data = await getApplicationById(req.params.id)
     
-    return res.status(201).json({status: "success", message: "Application edited successfully", data});
+    return res.status(201).json({status: "success", data});
 })
 
 export const filterApplications = catchAsync(async(req, res, next) => {

@@ -2,11 +2,11 @@ import { AppError } from "../utils/apperror.js";
 import { catchAsync } from "../utils/catchasync.js";
 import jwt from 'jsonwebtoken';
 import { promisify } from 'util';
-import { supabase } from "../supabase/supabase.js";
+import { getUserById } from "../repositories/userrepositories.js"
 
 export const protectMiddleware = catchAsync(async (req, res, next) => {
     const JWT_SECRET = process.env.JWT_SECRET;
-    const JWT_EXPIRES = process.env.JWT_EXPIRES_IN
+    
     // 1) Get the token from the request
     let token;
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')){
@@ -19,23 +19,9 @@ export const protectMiddleware = catchAsync(async (req, res, next) => {
     
     // 2) Verificate the token
     const decoded = await promisify(jwt.verify)(token, JWT_SECRET)
-    console.log(decoded)
     
     // 3) Check if user still exists
-    //TODO move this to a repository
-    const { data, error } = await supabase
-    .from('Users')
-    .select()
-    .eq('id', decoded.id)
-    .single()
-
-    console.log(data,error)
-    if(error && error.code != "") {
-        //TODO change error.message for error.details
-        return next(new AppError(error.message, 404))
-    } else if (error && !error.code) {
-        return next(new AppError(error.message, 500))
-    } 
+    const data = await getUserById(decoded.id)
 
     // 4) Check if user changes password after the token was issued
     //TODO need to set up User with a password_change_at so we can compare this date and time with decoded.iat (Protecting Routes - Part 2)
@@ -44,6 +30,7 @@ export const protectMiddleware = catchAsync(async (req, res, next) => {
     next()
 })
 
+//Indicate what role has authorization when using this middleware
 export const authorizationMiddleware = (...roles) => { 
     //roles is array ['user', 'other' ...]     
     return (req, res, next) => {

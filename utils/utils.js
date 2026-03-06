@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import crypto from 'crypto';
 
 export async function hashPassword(password) {
     const saltRounds = 12;
@@ -19,3 +20,12 @@ export const correctPassword = async (candidatePassword, userPassword) => {
         throw new Error("Failed to compare passwords")
     }
 }
+
+export const createPasswordResetToken = () => {
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    const datePlus = Date.now() + 10 * 60 * 1000
+    const passwordResetExpires = new Date(datePlus).toISOString()
+    const hashedResetToken = crypto.createHash('sha256').update(resetToken).digest('hex')
+
+    return {hashedResetToken, passwordResetExpires}
+}   

@@ -1,11 +1,26 @@
 import { supabase } from "../supabase/supabase.js";
 import { AppError } from "../utils/apperror.js";
 
-export const createApplication = async (application) => {
+export const findAllApplications = async () => {
+    const { data, error } = await supabase
+    .from('Applications')
+    .select();
+
+    console.log(data,error)
+    if(error && error.code != "") {
+        throw new AppError(error.message, 409)
+    } else if (error && !error.code) {
+        throw new AppError(error.message, 500)
+    }
+
+    return data
+}
+
+export const createApplication = async (application, user) => {
     const { data, error } = await supabase
     .from('Applications')
     .insert({
-        user_id: application.userid, //TODO Just for now, it should change to get user_id from jwt
+        user_id: user.id, //TODO Just for now, it should change to get user_id from jwt
         company: application.companyName.toLocaleLowerCase(),
         position: application.positionTitle.toLocaleLowerCase(),
         employment_type: application.employmentType.toLocaleLowerCase(),
@@ -33,6 +48,21 @@ export const createApplication = async (application) => {
         throw new AppError(error.message, 500)
     }
 
+    return data
+}
+
+export const getAllApplicationsByUserId = async (userId) => {
+    const { data, error } = await supabase
+    .from("Applications")
+    .select()
+    .eq('user_id', userId)
+
+    console.log(data, error);
+    if(error && error.code != "") {
+        throw new AppError(error.message, 404) //TODO maybe change error.message to error.details
+    } else if (error && !error.code) {
+        throw new AppError(error.message, 500)
+    }
     return data
 }
 

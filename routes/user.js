@@ -1,7 +1,7 @@
 import { Router, json } from "express";
 import { editUserValidation, userValidation } from "../middlewares/schemavalidations.js";
 import {editUser} from '../controllers/usercontrollers.js';
-import { logInFunction, signUpFunction } from "../controllers/authenticationcontrollers.js";
+import { forgotPassword, logInFunction, signUpFunction } from "../controllers/authenticationcontrollers.js";
 
 
 export const userRouter = Router();
@@ -14,12 +14,14 @@ export const userRouter = Router();
 
 //TODO use route and chain actions .route('').get().post()...
 
+//TODO add validation middleware
 // TODO update this endpoint with real function
 userRouter.get('/', (req, res) => {
     // return res.json("Hello world");
     res.status(500).json({status: 'error', message: 'This route is not yet defined'});
 });
 
+//TODO add validation middleware
 // TODO update get function for user id
 userRouter.get('/:id', (req, res) => {
     // return res.json("Hello world");
@@ -31,9 +33,10 @@ userRouter.post('/signup', userValidation, signUpFunction);
 //TODO add validation middleware
 userRouter.post('/login', logInFunction);
 
-userRouter.post('/forgotPassword', (req, res) => {
-    res.send("Success")
-})
+//TODO add validation middleware
+userRouter.post('/forgotPassword', forgotPassword)
+
+//TODO add validation middleware
 userRouter.post('/resetPassword', (req, res) => {
     res.send("Success")
 })

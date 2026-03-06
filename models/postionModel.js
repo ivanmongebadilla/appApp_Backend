@@ -1,7 +1,6 @@
 import { z } from 'zod';
 
 export const positionSchema = z.object({
-    userid: z.number(), //TODO need to remove this I think
     companyName: z.string(),
     positionTitle: z.string(),
     employmentType: z.enum(["full_time", "part_time", "contract", "temporary", "intern"]),

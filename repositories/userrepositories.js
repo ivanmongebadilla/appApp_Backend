@@ -3,19 +3,19 @@ import { AppError } from "../utils/apperror.js";
 
 export const createUser = async (userData, hashedPassword) => {
     const { data, error } = await supabase
-        .from('Users')
-        .insert({
-            email: userData.email,
-            password: hashedPassword,
-            firstname: userData.firstName,
-            lastname: userData.lastName,
-            role: userData.role,
-            country: userData.location.country,
-            state: userData.location.state,
-            city: userData.location.city
-        })
-        .select()
-        .single();
+    .from('Users')
+    .insert({
+        email: userData.email,
+        password: hashedPassword,
+        firstname: userData.firstName,
+        lastname: userData.lastName,
+        role: userData.role,
+        country: userData.location.country,
+        state: userData.location.state,
+        city: userData.location.city
+    })
+    .select()
+    .single();
 
     console.log(data, error);
     if(error && error.code != "") {
@@ -61,10 +61,9 @@ export const getAllUsers = async () => {
 }
 
 export const getUserById = async (id) => {
-    let newError
     const { data, error} = await supabase
     .from('Users')
-    .select()
+    .select('id, created_at, email, firstname, lastname, role, country, state, city')
     .eq('id', id)
     .single()
     
@@ -77,6 +76,7 @@ export const getUserById = async (id) => {
     } else if (!data.email) {
         throw new AppError("Incorrect user id", 401)
     }
+    
     return data
 }
 
@@ -93,7 +93,7 @@ export const editUserById = async (userData, id) => {
        city: userData.location.city 
     })
     .match({id: id})
-    .select()
+    .select('id, created_at, email, firstname, lastname, role, country, state, city')
     .single();
 
     console.log(data, error)
@@ -104,4 +104,53 @@ export const editUserById = async (userData, id) => {
     }
 
     return data
-} 
+}
+
+//TODO make a single editUserBy
+export const editUserByEmail = async (userData, email) => {
+    const { data, error } = await supabase
+    .from('Users')
+    .update({
+       email: userData.email,
+       firstname: userData.firstName,
+       lastname: userData.lastName,
+       role: userData.role,
+       country: userData.location.country,
+       state: userData.location.state,
+       city: userData.location.city 
+    })
+    .match({id: id})
+    .select('id, created_at, email, firstname, lastname, role, country, state, city')
+    .single();
+
+    console.log(data, error)
+    if(error && error.code != "") {
+        throw new AppError(error.message, 404)
+    } else if (error && !error.code) {
+        throw new AppError(error.message, 500)
+    }
+
+    return data
+}
+
+export const passwordResetByEmail = async (passResetData, email) => {
+    const { data, error } = await supabase
+    .from('Users')
+    .update({
+       password_reset_token: passResetData.hashedResetToken,
+       password_reset_expires: passResetData.passwordResetExpires
+    })
+    .match({email: email})
+    .select('id, created_at, email, firstname, lastname, role, country, state, city')
+    .single();
+
+    console.log(data, error)
+    if(error && error.code != "") {
+        throw new AppError(error.message, 404)
+    } else if (error && !error.code) {
+        throw new AppError(error.message, 500)
+    }
+
+    //TODO do i need to return this?
+    return data
+}

@@ -11,12 +11,13 @@ export const userSchema = z.object({
         country: z.string(),
         state: z.string(),
         city: z.string()
-    })
+    }),
+    passwordResetToken: z.string().optional(),
+    passwordResetExpires: z.date().optional()
 })
 
 export const editUserSchema = z.object({
     email: z.email().optional(), //TODO Add errors
-    password: z.string().optional(),
     firstName: z.string().optional(),
     lastName: z.string().optional(),
     role: z.enum(ROLES).optional(), //TODO create some restrictions for to change to ADMIN
