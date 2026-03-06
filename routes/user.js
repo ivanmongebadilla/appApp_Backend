@@ -1,7 +1,8 @@
 import { Router, json } from "express";
-import { editUserValidation, userValidation } from "../middlewares/schemavalidations.js";
-import {editUser} from '../controllers/usercontrollers.js';
+import { editUserValidation, logInValidation, userValidation } from "../middlewares/schemavalidations.js";
+import {getUser, editUser, getUsers, getUserByParamId} from '../controllers/usercontrollers.js';
 import { forgotPassword, logInFunction, signUpFunction } from "../controllers/authenticationcontrollers.js";
+import { protectMiddleware, authorizationMiddleware } from "../middlewares/protect.js";
 
 
 export const userRouter = Router();
@@ -14,24 +15,13 @@ export const userRouter = Router();
 
 //TODO use route and chain actions .route('').get().post()...
 
-//TODO add validation middleware
-// TODO update this endpoint with real function
-userRouter.get('/', (req, res) => {
-    // return res.json("Hello world");
-    res.status(500).json({status: 'error', message: 'This route is not yet defined'});
-});
+userRouter.get('/', protectMiddleware, authorizationMiddleware('admin'), getUsers);
 
-//TODO add validation middleware
-// TODO update get function for user id
-userRouter.get('/:id', (req, res) => {
-    // return res.json("Hello world");
-    res.status(500).json({status: 'error', message: 'This route is not yet defined'});
-});
+userRouter.get('/:id', protectMiddleware, authorizationMiddleware('admin'), getUserByParamId);
 
 userRouter.post('/signup', userValidation, signUpFunction);
 
-//TODO add validation middleware
-userRouter.post('/login', logInFunction);
+userRouter.post('/login', logInValidation, logInFunction);
 
 //TODO add validation middleware
 userRouter.post('/forgotPassword', forgotPassword)
@@ -41,8 +31,4 @@ userRouter.post('/resetPassword', (req, res) => {
     res.send("Success")
 })
 
-// TODO should i use another validation?
-// TODO move function to controller
-//TODO change the id to use authenticated user id
-//TODO Add Authentication and authorization
-userRouter.patch('/:id', editUserValidation, editUser);
+userRouter.patch('/:id', editUserValidation, protectMiddleware, authorizationMiddleware('admin'), editUser);

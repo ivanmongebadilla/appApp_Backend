@@ -49,7 +49,7 @@ export const getUserByEmail = async (email) => {
 export const getAllUsers = async () => {
     const { data, error} = await supabase
     .from('Users')
-    .select()
+    .select('id, created_at, email, firstname, lastname, role, country, state, city')
 
     if(error && error.code != "") {
         throw new AppError(error.message, 409)

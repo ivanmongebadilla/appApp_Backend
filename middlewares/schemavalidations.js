@@ -1,4 +1,4 @@
-import { editUserSchema, userSchema } from "../models/userModel.js"
+import { editUserSchema, logInSchema, userSchema } from "../models/userModel.js"
 import { editPositionSchema, positionSchema } from "../models/postionModel.js";
 import { queryApplicationSchema } from "../models/queryModel.js";
 import { AppError } from "../utils/apperror.js";
@@ -15,6 +15,15 @@ export const userValidation = (req, res, next) => {
 
 export const editUserValidation = (req, res, next) => {
     const result = editUserSchema.safeParse(req.body);
+    if (!result.success){
+        return next(new AppError(result.error, 422))
+    }
+    req.body = result.data;
+    next();
+}
+
+export const logInValidation = (req, res, next) => {
+    const result = logInSchema.safeParse(req.body);
     if (!result.success){
         return next(new AppError(result.error, 422))
     }
@@ -47,6 +56,5 @@ export const queryApplicationValidation = (req, res, next) => {
         console.log('Query Validation: ', result)
         if (!result.success){return next(new AppError(result.error, 422))}
     }
-    next();  
-    
+    next();     
 }

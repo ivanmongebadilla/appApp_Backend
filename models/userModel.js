@@ -27,3 +27,8 @@ export const editUserSchema = z.object({
         city: z.string().optional()
     })
 })
+
+export const logInSchema = z.object({
+    email: z.email(),
+    password: z.string()
+}).strict()
