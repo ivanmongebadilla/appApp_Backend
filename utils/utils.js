@@ -23,9 +23,9 @@ export const correctPassword = async (candidatePassword, userPassword) => {
 
 export const createPasswordResetToken = () => {
     const resetToken = crypto.randomBytes(32).toString('hex');
-    const datePlus = Date.now() + 10 * 60 * 1000
+    const datePlus = Date.now() + 10 * 60 * 1000 //New token valid for 10mins
     const passwordResetExpires = new Date(datePlus).toISOString()
     const hashedResetToken = crypto.createHash('sha256').update(resetToken).digest('hex')
 
-    return {hashedResetToken, passwordResetExpires}
+    return {hashedResetToken, passwordResetExpires, resetToken}
 }   

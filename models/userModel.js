@@ -32,3 +32,12 @@ export const logInSchema = z.object({
     email: z.email(),
     password: z.string()
 }).strict()
+
+export const forgotPasswordSchema = z.object({
+    email: z.email() // Can add min/max lenght or other validation in the future
+}).strict()
+
+export const resetPasswordSchema = z.object({
+    // TODO add email as well mybe
+    password: z.string() // Can add min/max lenght or other validation in the future
+}).strict()

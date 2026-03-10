@@ -1,7 +1,7 @@
 import { catchAsync } from "../utils/catchasync.js"
 import { createApplication, getApplicationById, 
     editPositionById, queryApplications, findAllApplications,
-    getAllApplicationsByUserId } from "../repositories/applicationrepositories.js";
+    getAllApplicationsByUserId, deleteApplicationById } from "../repositories/applicationrepositories.js";
 
 
 export const getAllApplications = catchAsync(async (req,res,next) => {
@@ -39,4 +39,10 @@ export const filterApplications = catchAsync(async(req, res, next) => {
     const data = await queryApplications(req.query)
     
     res.status(201).json({status: "success", message: "Applications filtered successfully", data})
+})
+
+export const deleteApplication = catchAsync(async (req, res, next) => {
+    const data = await deleteApplicationById(req.params.id)
+    
+    res.status(200).json({status: "success", message: "Application deleted successfully"})
 })

@@ -1,6 +1,9 @@
 import { supabase } from "../supabase/supabase.js";
 import { AppError } from "../utils/apperror.js";
 
+//TODO improves the find or get one by, instead of having one byemail, bytoken, byid create a single function that retrives one and can
+// recive any parameter to find one by
+
 export const createUser = async (userData, hashedPassword) => {
     const { data, error } = await supabase
     .from('Users')
@@ -15,7 +18,7 @@ export const createUser = async (userData, hashedPassword) => {
         city: userData.location.city
     })
     .select()
-    .single();
+    .single('id, created_at, email, firstname, lastname, role, country, state, city');
 
     console.log(data, error);
     if(error && error.code != "") {
@@ -35,7 +38,6 @@ export const getUserByEmail = async (email) => {
     .single()
     
     console.log(data,error)
-    // console.log(data.email)
     if(error && error.code != "") {
         throw new AppError(error.message, 409)
     } else if (error && !error.code) {
@@ -65,6 +67,27 @@ export const getUserById = async (id) => {
     .from('Users')
     .select('id, created_at, email, firstname, lastname, role, country, state, city')
     .eq('id', id)
+    .single()
+    
+    console.log(data,error)
+    // console.log(data.email)
+    if(error && error.code != "") {
+        throw new AppError(error.message, 409)
+    } else if (error && !error.code) {
+        throw new AppError(error.message, 500)
+    } else if (!data.email) {
+        throw new AppError("Incorrect user id", 401)
+    }
+    
+    return data
+}
+
+export const getUserByPasswordResetToken = async (resetToken) => {
+    const { data, error} = await supabase
+    .from('Users')
+    .select('id, created_at, email, firstname, lastname, role, country, state, city')
+    .eq('password_reset_token', resetToken)
+    .gt('password_reset_expires', new Date().toISOString())
     .single()
     
     console.log(data,error)
@@ -152,5 +175,46 @@ export const passwordResetByEmail = async (passResetData, email) => {
     }
 
     //TODO do i need to return this?
+    return data
+}
+
+export const editPassword = async (id, hashedPassword) => {
+    const { data, error } = await supabase
+    .from('Users')
+    .update({
+       password: hashedPassword,
+       password_change_at: new Date().toISOString(),
+       password_reset_token: null,
+       password_reset_expires: null
+    })
+    .eq('id', id)
+    .select('id, created_at, email, firstname, lastname, role, country, state, city')
+    .single();
+
+    console.log(data, error)
+    if(error && error.code != "") {
+        throw new AppError(error.message, 404)
+    } else if (error && !error.code) {
+        throw new AppError(error.message, 500)
+    }
+
+    return data
+}
+
+export const deleteUserById = async (id) => {
+    const { data, error} = await supabase
+    .from("Users")
+    .delete()
+    .eq('id', id)
+    .select()
+    .single()
+
+    console.log(data, error)
+    if(error && error.code != "") {
+        throw new AppError(error.message, 404)
+    } else if (error && !error.code) {
+        throw new AppError(error.message, 500)
+    }
+
     return data
 }

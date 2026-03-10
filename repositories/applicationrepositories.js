@@ -20,7 +20,7 @@ export const createApplication = async (application, user) => {
     const { data, error } = await supabase
     .from('Applications')
     .insert({
-        user_id: user.id, //TODO Just for now, it should change to get user_id from jwt
+        user_id: user.id,
         company: application.companyName.toLocaleLowerCase(),
         position: application.positionTitle.toLocaleLowerCase(),
         employment_type: application.employmentType.toLocaleLowerCase(),
@@ -152,4 +152,21 @@ export const queryApplications = async (query) =>{
     }
 
     return data
+}
+
+export const deleteApplicationById = async (id) => {
+    const { data, error } = await supabase
+    .from('Applications')
+    .delete()
+    .eq('id', id)
+    .select()
+    .single()
+
+    if(error && error.code != "") {
+        throw new AppError(error.message, 404)
+    } else if (error && !error.code) {
+        throw new AppError(error.message, 500)
+    }
+
+    return data 
 }

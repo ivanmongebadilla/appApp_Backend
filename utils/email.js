@@ -1,6 +1,7 @@
-import nodemailer from nodemailer;
+import nodemailer from 'nodemailer';
+import { AppError } from './apperror.js';
 
-const sendEmail = async options => {
+export const sendEmail = async (options, resetUrl) => {
     // Generate a test account
     const testAccount = await nodemailer.createTestAccount();
 
@@ -17,7 +18,28 @@ const sendEmail = async options => {
         user: testAccount.user,
         pass: testAccount.pass,
         },
+        tls: {
+            rejectUnauthorized: false //TODO just for DEV!!!
+        }
     });
+
+    const mailOptions = {
+        from: `"Test App" <${testAccount.user}>`,
+        to: options.email,
+        subject: "Reset Password for appApp",
+        text: `Password reset url: ${resetUrl}`,
+        html: "<p>This message was sent using <b>Ethereal</b>.</p>",
+    }
+
+    try{
+        // Send a test message
+        const info = await transporter.sendMail(mailOptions);
+        console.log("Message sent: %s", info.messageId);
+        console.log("Preview: %s", nodemailer.getTestMessageUrl(info));
+    } 
+    catch (err){
+        throw(new AppError(err, 503))
+    }
 
     // 2) Define email options
 
