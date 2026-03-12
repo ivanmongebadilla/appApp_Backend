@@ -3,6 +3,8 @@ import { positionValidation, editPositionValidation, queryApplicationValidation 
 import { addApplication, editPosition, filterApplications, getSingleApplication, getAllApplications, deleteApplication } from "../controllers/applicationcontrollers.js";
 import { protectMiddleware, authorizationMiddleware } from "../middlewares/protect.js";
 
+// ########## COMPLETED FOR VERSION 1 ########## \\
+
 //This is a route for applications for Admin user only 
 
 export const applicationRouter = Router();

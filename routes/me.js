@@ -4,6 +4,8 @@ import { getAllUserApplications, filterUserApplications, editUserPosition, addAp
 import { getUser, updateMe, deleteUser } from "../controllers/usercontrollers.js";
 import { editPositionValidation, editUserValidation, positionValidation, queryApplicationValidation } from "../middlewares/schemavalidations.js";
 
+// ########## COMPLETED FOR VERSION 1 ########## \\
+
 export const meRouter = Router()
 
 //Retrun logged in user
