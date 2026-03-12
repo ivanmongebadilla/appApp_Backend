@@ -3,14 +3,30 @@ import { positionValidation, editPositionValidation, queryApplicationValidation 
 import { addApplication, editPosition, filterApplications, getSingleApplication, getAllApplications, deleteApplication } from "../controllers/applicationcontrollers.js";
 import { protectMiddleware, authorizationMiddleware } from "../middlewares/protect.js";
 
+//This is a route for applications for Admin user only 
+
 export const applicationRouter = Router();
 
-applicationRouter.get('/', protectMiddleware, authorizationMiddleware('admin'), getAllApplications).post('/', positionValidation, protectMiddleware, addApplication)
+//Access only for Admin user
+//Get all applications
+applicationRouter.get('/', protectMiddleware, authorizationMiddleware('admin'), getAllApplications)
 
+//Add an applicaton
+// Moved to me
+// applicationRouter.post('/', positionValidation, protectMiddleware, addApplication)
+
+//Access only for Admin user
+//Get filtered applications 
 applicationRouter.get('/filter', protectMiddleware, authorizationMiddleware('admin'), queryApplicationValidation, filterApplications)
 
-applicationRouter
-    .route('/:id')
-    .get(protectMiddleware, authorizationMiddleware('admin'), getSingleApplication)
-    .patch(editPositionValidation, protectMiddleware, authorizationMiddleware('admin'), editPosition)
-    .delete(protectMiddleware, authorizationMiddleware('admin'), deleteApplication);
+//Access only for Admin user
+//Get application by id param
+applicationRouter.get('/:id', protectMiddleware, authorizationMiddleware('admin'), getSingleApplication)
+
+//Access only for Admin user
+//Edit application by id param
+applicationRouter.patch('/:id', editPositionValidation, protectMiddleware, authorizationMiddleware('admin'), editPosition)
+
+//Access only for Admin user
+//Delete application by id param
+applicationRouter.delete('/:id', protectMiddleware, authorizationMiddleware('admin'), deleteApplication);

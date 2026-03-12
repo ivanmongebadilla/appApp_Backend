@@ -41,10 +41,12 @@ export const positionValidation = (req, res, next) => {
 }
 
 export const editPositionValidation = (req, res, next) => {
+    if (!req.body || Object.keys(req.body).length === 0) return next(new AppError("Body is empty or null", 422));
     const result = editPositionSchema.safeParse(req.body);
     if (!result.success){
         return next(new AppError(result.error, 422));
     }
+    console.log("Validation result: ", result.data)
     req.body = result.data;
     next();
 }
