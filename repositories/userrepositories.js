@@ -1,8 +1,13 @@
 import { supabase } from "../supabase/supabase.js";
 import { AppError } from "../utils/apperror.js";
 
-//TODO improves the find or get one by, instead of having one byemail, bytoken, byid create a single function that retrives one and can
-// recive any parameter to find one by
+const errorThrow = (error) =>{
+    if(error && error.code != "") {
+        throw new AppError(error.message, 409)
+    } else if (error && !error.code) {
+        throw new AppError(error.message, 500)
+    }
+}
 
 export const createUser = async (userData, hashedPassword) => {
     const { data, error } = await supabase
@@ -21,30 +26,24 @@ export const createUser = async (userData, hashedPassword) => {
     .single('id, created_at, email, firstname, lastname, role, country, state, city');
 
     console.log(data, error);
-    if(error && error.code != "") {
-        throw new AppError(error.message, 409)
-    } else if (error && !error.code) {
-        throw new AppError(error.message, 500)
-    }
+    errorThrow(error)
 
     return data
 }
 
-export const getUserByEmail = async (email) => {
-    const { data, error} = await supabase
+export const getUserByEmailorId = async (email=null, id=null) => {
+    let query = supabase
     .from('Users')
     .select()
-    .eq('email', email)
-    .single()
+
+    if (email) { query = query.eq('email', email) }
+    if (id) { query = query.eq('id', id) }
     
+    const { data, error } = await query
+        .single()
+
     console.log(data,error)
-    if(error && error.code != "") {
-        throw new AppError(error.message, 409)
-    } else if (error && !error.code) {
-        throw new AppError(error.message, 500)
-    } else if (!data.email) {
-        throw new AppError("Incorrect user email", 401)
-    }
+    errorThrow(error)
     return data
 }
 
@@ -53,32 +52,8 @@ export const getAllUsers = async () => {
     .from('Users')
     .select('id, created_at, email, firstname, lastname, role, country, state, city')
 
-    if(error && error.code != "") {
-        throw new AppError(error.message, 409)
-    } else if (error && !error.code) {
-        throw new AppError(error.message, 500)
-    }
+    errorThrow(error)
 
-    return data
-}
-
-export const getUserById = async (id) => {
-    const { data, error} = await supabase
-    .from('Users')
-    .select('id, created_at, email, firstname, lastname, role, country, state, city')
-    .eq('id', id)
-    .single()
-    
-    console.log(data,error)
-    // console.log(data.email)
-    if(error && error.code != "") {
-        throw new AppError(error.message, 409)
-    } else if (error && !error.code) {
-        throw new AppError(error.message, 500)
-    } else if (!data.email) {
-        throw new AppError("Incorrect user id", 401)
-    }
-    
     return data
 }
 
@@ -91,67 +66,33 @@ export const getUserByPasswordResetToken = async (resetToken) => {
     .single()
     
     console.log(data,error)
-    // console.log(data.email)
-    if(error && error.code != "") {
-        throw new AppError(error.message, 409)
-    } else if (error && !error.code) {
-        throw new AppError(error.message, 500)
-    } else if (!data.email) {
-        throw new AppError("Incorrect user id", 401)
-    }
+    errorThrow(error)
     
     return data
 }
 
-export const editUserById = async (userData, id) => {
-    const { data, error } = await supabase
-    .from('Users')
-    .update({
-       email: userData.email,
-       firstname: userData.firstName,
-       lastname: userData.lastName,
-       role: userData.role,
-       country: userData.location.country,
-       state: userData.location.state,
-       city: userData.location.city 
-    })
-    .match({id: id})
-    .select('id, created_at, email, firstname, lastname, role, country, state, city')
-    .single();
+export const editUserByEmailorId = async (email, id, userData) => {
+    let query = supabase
+        .from('Users')
+        .update({
+            email: userData.email,
+            firstname: userData.firstName,
+            lastname: userData.lastName,
+            role: userData.role,
+            country: userData.location.country,
+            state: userData.location.state,
+            city: userData.location.city 
+        })
+        .select('id, created_at, email, firstname, lastname, role, country, state, city')
+
+    if (email) { query = query.eq('email', email) }
+    if (id) { query = query.eq('id', id) }
+
+    const { data, error } = await query
+        .single()
 
     console.log(data, error)
-    if(error && error.code != "") {
-        throw new AppError(error.message, 404)
-    } else if (error && !error.code) {
-        throw new AppError(error.message, 500)
-    }
-
-    return data
-}
-
-//TODO make a single editUserBy
-export const editUserByEmail = async (userData, email) => {
-    const { data, error } = await supabase
-    .from('Users')
-    .update({
-       email: userData.email,
-       firstname: userData.firstName,
-       lastname: userData.lastName,
-       role: userData.role,
-       country: userData.location.country,
-       state: userData.location.state,
-       city: userData.location.city 
-    })
-    .match({id: id})
-    .select('id, created_at, email, firstname, lastname, role, country, state, city')
-    .single();
-
-    console.log(data, error)
-    if(error && error.code != "") {
-        throw new AppError(error.message, 404)
-    } else if (error && !error.code) {
-        throw new AppError(error.message, 500)
-    }
+    errorThrow(error)
 
     return data
 }
@@ -168,11 +109,7 @@ export const passwordResetByEmail = async (passResetData, email) => {
     .single();
 
     console.log(data, error)
-    if(error && error.code != "") {
-        throw new AppError(error.message, 404)
-    } else if (error && !error.code) {
-        throw new AppError(error.message, 500)
-    }
+    errorThrow(error)
 
     //TODO do i need to return this?
     return data
@@ -192,11 +129,7 @@ export const editPassword = async (id, hashedPassword) => {
     .single();
 
     console.log(data, error)
-    if(error && error.code != "") {
-        throw new AppError(error.message, 404)
-    } else if (error && !error.code) {
-        throw new AppError(error.message, 500)
-    }
+    errorThrow(error)
 
     return data
 }
@@ -210,11 +143,7 @@ export const deleteUserById = async (id) => {
     .single()
 
     console.log(data, error)
-    if(error && error.code != "") {
-        throw new AppError(error.message, 404)
-    } else if (error && !error.code) {
-        throw new AppError(error.message, 500)
-    }
+    errorThrow(error)
 
     return data
 }
