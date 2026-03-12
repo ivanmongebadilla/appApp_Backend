@@ -95,7 +95,7 @@ export const updatePassword = catchAsync(async (req, res, next) => {
         return next(new AppError("Please provide current and new password", 400))
     }
     // 1) Get user 
-    const user = await getUserByEmail(req.user.email)
+    const user = await getUserByEmailorId(req.user.email, null)
 
     // 2) Check if posted password ir correct
     const correct = await correctPassword(currentPassword, user.password);

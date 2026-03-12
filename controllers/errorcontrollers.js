@@ -48,9 +48,9 @@ export const errorHandler = (err, req, res, next) =>{
 
     //TODO add all errors types from supabase
     if (error.name === 'JsonWebTokenError') error = handleJWTError(error)
-    if (error.name === ' TokenExpiredError') error = handleJWTExpired(error)
+    if (error.name === 'TokenExpiredError') error = handleJWTExpired(error)
 
-    sendErrorProd(err, res);
+    sendErrorProd(error, res);
   }
   
 }

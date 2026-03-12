@@ -4,7 +4,7 @@ import { correctPassword } from "../utils/utils.js";
 import { AppError } from "../utils/apperror.js";
 
 export const getUser = catchAsync(async (req, res, next) => {
-    const data = await getUserById(req.user.id)
+    const data = await getUserByEmailorId(null, req.user.id)
 
     return res.status(201).json({status: "success", data})
 })
@@ -50,7 +50,7 @@ export const deleteUser = catchAsync(async (req, res, next) => {
     }
 
     // Check password match
-    const correct = correctPassword(req.body.password, req.user.password)
+    const correct = await correctPassword(req.body.password, req.user.password)
 
     if(!correct){
         return next(new AppError('Incorrect password', 401))

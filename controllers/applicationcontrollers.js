@@ -33,7 +33,7 @@ export const editUserPosition = catchAsync(async(req, res, next) => {
 
 //For Admin user
 export const editPosition = catchAsync(async (req, res, next) => {
-    const data = editPositionById(req.body, req.params.id)
+    const data = await editPositionById(req.body, req.params.id)
     
     return res.status(200).json({status: "success", message: "Application edited successfully", data});
 });
