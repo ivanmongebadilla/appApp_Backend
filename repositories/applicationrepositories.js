@@ -1,17 +1,22 @@
 import { supabase } from "../supabase/supabase.js";
 import { AppError } from "../utils/apperror.js";
 
+const errorThrow = (error) =>{
+    if(error && error.code != "") {
+        throw new AppError(error.message, 409)
+    } else if (error && !error.code) {
+        throw new AppError(error.message, 500)
+    }
+}
+
+//// This is for Admin user
 export const findAllApplications = async () => {
     const { data, error } = await supabase
     .from('Applications')
     .select();
 
     console.log(data,error)
-    if(error && error.code != "") {
-        throw new AppError(error.message, 409)
-    } else if (error && !error.code) {
-        throw new AppError(error.message, 500)
-    }
+    errorThrow(error)
 
     return data
 }
@@ -42,11 +47,7 @@ export const createApplication = async (application, user) => {
     
 
     console.log(data, error);
-    if(error && error.code != "") {
-        throw new AppError(error.message, 409)
-    } else if (error && !error.code) {
-        throw new AppError(error.message, 500)
-    }
+    errorThrow(error)
 
     return data
 }
@@ -59,11 +60,8 @@ export const getAllApplicationsByUserId = async (userId) => {
     .eq('user_id', userId)
 
     console.log(data, error);
-    if(error && error.code != "") {
-        throw new AppError(error.message, 404) //TODO maybe change error.message to error.details
-    } else if (error && !error.code) {
-        throw new AppError(error.message, 500)
-    }
+    errorThrow(error)
+    
     return data
 }
 
@@ -76,11 +74,8 @@ export const getApplicationById = async (id) => {
     .single()
 
     console.log(data, error);
-    if(error && error.code != "") {
-        throw new AppError(error.message, 404) //TODO maybe change error.message to error.details
-    } else if (error && !error.code) {
-        throw new AppError(error.message, 500)
-    }
+    errorThrow(error)
+
     return data
 }
 
@@ -111,19 +106,15 @@ export const editPositionById = async (updates, id) => {
     .single();
 
     // console.log(data, error);
-    if(error && error.code != "") {
-        throw new AppError(error.message, 404)
-    } else if (error && !error.code) {
-        throw new AppError(error.message, 500)
-    }
+    errorThrow(error)
 
     return data
 }
 
+// This is for user
 export const editUserApplicationById = async (updates, appId, userId) => {
     // 1) Check that the application user_id match the user id for the appId
      // 2) Update the position
-     console.log(appId, userId)
     const { data, error } = await supabase
     .from('Applications')
     //Dont use updates object because the schemaModel is not the same as the schema in the database
@@ -150,16 +141,13 @@ export const editUserApplicationById = async (updates, appId, userId) => {
     .single()
 
     console.log(data, error)
-    if(error && error.code != "") {
-        throw new AppError(error.message, 404)
-    } else if (error && !error.code) {
-        throw new AppError(error.message, 500)
-    } 
+    errorThrow(error)
 
     // 3) return the position
     return data
 }
 
+// This is for user
 export const queryUserApplications = async (filterQuery, userId) => {
     let query = supabase
     .from('Applications')
@@ -189,15 +177,12 @@ export const queryUserApplications = async (filterQuery, userId) => {
 
     const { data, error } = await query
     console.log("Data: ", data)
-    if(error && error.code != "") {
-        return next(new AppError(error.message, 404)) //TODO maybe change error.message to error.details
-    } else if (error && !error.code) {
-        return next(new AppError(error.message, 500))
-    }
+    errorThrow(error)
 
     return data
 }
 
+//// This is for Admin user
 export const queryApplications = async (query) =>{
     let newQuery = supabase
     .from("Applications")
@@ -227,11 +212,7 @@ export const queryApplications = async (query) =>{
     
     const { data, error } = await newQuery
 
-    if(error && error.code != "") {
-        return next(new AppError(error.message, 404)) //TODO maybe change error.message to error.details
-    } else if (error && !error.code) {
-        return next(new AppError(error.message, 500))
-    }
+    errorThrow(error)
 
     return data
 }
@@ -244,11 +225,7 @@ export const deleteApplicationById = async (id) => {
     .select()
     .single()
 
-    if(error && error.code != "") {
-        throw new AppError(error.message, 404)
-    } else if (error && !error.code) {
-        throw new AppError(error.message, 500)
-    }
+    errorThrow(error)
 
     return data 
 }

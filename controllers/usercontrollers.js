@@ -1,5 +1,5 @@
 import { catchAsync } from "../utils/catchasync.js";
-import { editUserById, getUserById, getAllUsers, deleteUserById } from "../repositories/userrepositories.js";
+import { editUserByEmailorId, getAllUsers, deleteUserById, getUserByEmailorId } from "../repositories/userrepositories.js";
 import { correctPassword } from "../utils/utils.js";
 import { AppError } from "../utils/apperror.js";
 
@@ -18,21 +18,22 @@ export const getUsers = catchAsync(async (req, res, next) => {
 
 // This is for Admin user
 export const getUserByParamId = catchAsync(async (req, res, next) => {
-    const data = await getUserById(req.params.id)
+    //const data = await getUserById(req.params.id)
+    const data = await getUserByEmailorId(null, req.params.id)
 
     return res.status(201).json({status: "success", data})
 })
 
 // This is for Admin user
 export const editUser = catchAsync(async(req,res,next) =>{
-    const data = await editUserById(req.body, req.params.id)
+    const data = await editUserByEmailorId(null, req.params.id, req.body)
 
     return res.status(200).json({status: "success", message: "User edited successfully", data});
 })
 
 //This is for normal user
 export const updateMe = catchAsync(async (req, res, next) => {
-    const data = await editUserById(req.body, req.user.id)
+    const data = await editUserByEmailorId(null, req.user.id, req.body)
 
     return res.status(200).json({status: "success", message: "User edited successfully", data});
 })

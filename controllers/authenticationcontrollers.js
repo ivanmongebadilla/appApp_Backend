@@ -3,9 +3,8 @@ import { hashPassword, correctPassword } from "../utils/utils.js";
 import { AppError } from "../utils/apperror.js";
 import { createPasswordResetToken } from "../utils/utils.js"
 import { catchAsync } from "../utils/catchasync.js";
-import { getUserByEmail, createUser, passwordResetByEmail, 
-    getUserByPasswordResetToken, editPassword, 
-    getUserById} from "../repositories/userrepositories.js";
+import { getUserByEmailorId, createUser, passwordResetByEmail, 
+    getUserByPasswordResetToken, editPassword } from "../repositories/userrepositories.js";
 import { sendEmail } from "../utils/email.js";
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
@@ -35,7 +34,7 @@ export const logInFunction = catchAsync(async (req, res, next) => {
         return next(new AppError("Please provide email and password", 400))
     }
 
-    const user = await getUserByEmail(email)
+    const user = await getUserByEmailorId(email, null)
 
     const correct = await correctPassword(password, user.password);
     if(!correct){

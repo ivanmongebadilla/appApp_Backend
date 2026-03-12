@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { positionValidation, editPositionValidation, queryApplicationValidation } from "../middlewares/schemavalidations.js";
-import { addApplication, editPosition, filterApplications, getSingleApplication, getAllApplications, deleteApplication } from "../controllers/applicationcontrollers.js";
+import { editPositionValidation, queryApplicationValidation } from "../middlewares/schemavalidations.js";
+import { editPosition, filterApplications, getSingleApplication, getAllApplications, deleteApplication } from "../controllers/applicationcontrollers.js";
 import { protectMiddleware, authorizationMiddleware } from "../middlewares/protect.js";
 
 // ########## COMPLETED FOR VERSION 1 ########## \\
@@ -12,10 +12,6 @@ export const applicationRouter = Router();
 //Access only for Admin user
 //Get all applications
 applicationRouter.get('/', protectMiddleware, authorizationMiddleware('admin'), getAllApplications)
-
-//Add an applicaton
-// Moved to me
-// applicationRouter.post('/', positionValidation, protectMiddleware, addApplication)
 
 //Access only for Admin user
 //Get filtered applications 

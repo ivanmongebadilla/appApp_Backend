@@ -2,7 +2,7 @@ import { AppError } from "../utils/apperror.js";
 import { catchAsync } from "../utils/catchasync.js";
 import jwt from 'jsonwebtoken';
 import { promisify } from 'util';
-import { getUserById } from "../repositories/userrepositories.js"
+import { getUserByEmailorId } from "../repositories/userrepositories.js"
 
 export const protectMiddleware = catchAsync(async (req, res, next) => {
     const JWT_SECRET = process.env.JWT_SECRET;
@@ -21,7 +21,7 @@ export const protectMiddleware = catchAsync(async (req, res, next) => {
     const decoded = await promisify(jwt.verify)(token, JWT_SECRET)
     
     // 3) Check if user still exists
-    const data = await getUserById(decoded.id)
+    const data = await getUserByEmailorId(null, decoded.id)
 
     // 4) Check if user changes password after the token was issued
     //TODO need to set up User with a password_change_at so we can compare this date and time with decoded.iat (Protecting Routes - Part 2)
