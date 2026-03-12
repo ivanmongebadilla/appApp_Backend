@@ -80,10 +80,10 @@ JWT tokens are returned when a user:
 
 | Method | Endpoint | Access | Description |
 |------|------|------|------|
-| GET | `/users` | Admin | Get all users |
-| GET | `/users/:id` | Admin | Get user by id |
-| PATCH | `/users/:id` | Admin | Update user |
-| DELETE | `/users/:id` | Admin | Delete user |
+| GET | `/user` | Admin | Get all users |
+| GET | `/user/:id` | Admin | Get user by id |
+| PATCH | `/user/:id` | Admin | Update user |
+| DELETE | `/user/:id` | Admin | Delete user |
 
 ---
 
@@ -118,10 +118,10 @@ Admin can manage **applications from all users**.
 
 | Method | Endpoint | Access | Description |
 |------|------|------|------|
-| GET | `/applications` | Admin | Get all applications |
-| GET | `/applications/:id` | Admin | Get application by id |
-| PATCH | `/applications/:id` | Admin | Update application |
-| DELETE | `/applications/:id` | Admin | Delete application |
+| GET | `/application` | Admin | Get all applications |
+| GET | `/application/:id` | Admin | Get application by id |
+| PATCH | `/application/:id` | Admin | Update application |
+| DELETE | `/application/:id` | Admin | Delete application |
 
 ---
 
