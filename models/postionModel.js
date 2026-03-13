@@ -11,7 +11,7 @@ export const positionSchema = z.object({
         max: z.number().nonnegative().optional(),
         currency: z.string().optional()
     }).optional(),
-    status: z.enum(["applied", "interviewing", "offered", "rejected", "saved", "archvied", "withdrawn"]),
+    status: z.enum(["applied", "interviewing", "offered", "rejected", "saved", "archived", "withdrawn"]),
     priority: z.enum(["high", "medium", "low"]),
     note: z.string().optional(),
     applied_date: z.string().date(),
@@ -36,7 +36,7 @@ export const editPositionSchema = z.object({
         max: z.number().nonnegative().optional(),
         currency: z.string().optional()
     }).optional(),
-    status: z.enum(["applied", "interviewing", "offered", "rejected", "saved", "archvied", "withdrawn"]),
+    status: z.enum(["applied", "interviewing", "offered", "rejected", "saved", "archived", "withdrawn"]),
     priority: z.enum(["high", "medium", "low"]),
     note: z.string().optional(),
     applied_date: z.string().date(),

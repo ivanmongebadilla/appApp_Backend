@@ -1,4 +1,5 @@
-import { z } from 'zod';
+import { z } from "zod"
+
 const ROLES = ["admin", "user"]
 
 export const userSchema = z.object({
@@ -29,7 +30,7 @@ export const editUserSchema = z.object({
 })
 
 export const logInSchema = z.object({
-    email: z.email(),
+    email: z.string().email(),
     password: z.string()
 }).strict()
 

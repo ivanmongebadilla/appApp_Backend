@@ -1,0 +1,30 @@
+openapi: 3.0.3
+
+info:
+  title: Job Applications API
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3000/api/v1
+
+paths:
+  /user/login:
+    post:
+      summary: Login user
+      responses:
+        "200":
+          description: JWT token
+  /auth/signup:
+    post:
+      summary: Sign up user
+
+      requestBody:
+        description: "User information"
+        required: true
+        content:
+            application/json:
+                schema:
+                    $ref: #/
+
+      responses:
+        "201": 

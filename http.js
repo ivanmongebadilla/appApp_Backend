@@ -1,18 +1,24 @@
 
-import express, {json} from 'express';
+import express from 'express';
 import { userRouter } from './routes/user.js';
 import { applicationRouter } from './routes/applications.js';
 import { meRouter } from './routes/me.js';
 import morgan from 'morgan';
 import { AppError } from './utils/apperror.js';
 import { errorHandler } from './controllers/errorcontrollers.js';
+import swaggerUi from "swagger-ui-express"
+import { doc } from './swagger/swagger.js';
+
 
 const hostname = 'localhost';
 const port = 3000;
 
+// const swaggerDocument = generator.generateDocument(doc)
+
 const app = express();
 
 // ***** MIDDLEWARES ***** /
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(doc))
 app.use(morgan('dev')); //To see information about the requests.
 app.use(express.json()); //Middleware to parse JSON bodies comming from request
 app.use(express.urlencoded({extended: true})); //Middleware to parse URL encoded bodies coming from request
